@@ -1,3 +1,4 @@
+```javascript
 let calendar;
 let selectedEvent = null;
 
@@ -66,12 +67,35 @@ document.getElementById("modalTitle").innerHTML =
 `<strong>Cliente:</strong><br>${info.event.title}`;
 
 document.getElementById("modalDescription").innerHTML =
-`<strong>Descrição:</strong><br>${info.event.extendedProps.description}`;
+`
+<strong>Descrição:</strong><br>
+${info.event.extendedProps.description}
+`;
+
+let garantiaTexto = "";
+
+if(info.event.extendedProps.garantia){
+
+const garantia =
+new Date(info.event.extendedProps.garantia);
+
+garantiaTexto =
+`<br><br>
+<strong>🛡️ Garantia até:</strong><br>
+${garantia.toLocaleDateString()}
+`;
+
+}
 
 document.getElementById("modalDate").innerHTML =
-`<strong>Data:</strong><br>${info.event.start.toLocaleString()}`;
+`
+<strong>Data:</strong><br>
+${info.event.start.toLocaleString()}
+${garantiaTexto}
+`;
 
-document.getElementById("eventModal").style.display = "flex";
+document.getElementById("eventModal").style.display =
+"flex";
 
 }
 
@@ -82,6 +106,7 @@ calendar.render();
 updateOccupiedTimes();
 updateDashboard();
 blockPastTimes();
+checkGarantias();
 
 });
 
@@ -224,6 +249,27 @@ return;
 
 }
 
+let garantia = null;
+let alertaGarantia = null;
+
+if(status === "Finalizado"){
+
+const dataServico = new Date(start);
+
+garantia = new Date(dataServico);
+
+garantia.setDate(
+garantia.getDate() + 90
+);
+
+alertaGarantia = new Date(garantia);
+
+alertaGarantia.setDate(
+alertaGarantia.getDate() - 7
+);
+
+}
+
 calendar.addEvent({
 
 title:`${serviceType} - ${clientName}`,
@@ -234,7 +280,14 @@ description:description,
 
 status:status,
 
-color:"#ef4444"
+garantia:garantia,
+
+alertaGarantia:alertaGarantia,
+
+color:
+status === "Finalizado"
+? "#22c55e"
+: "#ef4444"
 
 });
 
@@ -245,6 +298,8 @@ saveEvents();
 updateDashboard();
 
 playNotification();
+
+checkGarantias();
 
 const servicePrice =
 servicePrices[serviceType] || 0;
@@ -298,7 +353,11 @@ description:event.extendedProps.description,
 
 status:event.extendedProps.status,
 
-color:"#ef4444"
+garantia:event.extendedProps.garantia,
+
+alertaGarantia:event.extendedProps.alertaGarantia,
+
+color:event.backgroundColor
 
 });
 
@@ -308,6 +367,55 @@ localStorage.setItem(
 "eventos",
 JSON.stringify(events)
 );
+
+}
+
+function checkGarantias(){
+
+const hoje = new Date();
+
+calendar.getEvents().forEach(event=>{
+
+const garantia =
+event.extendedProps.garantia;
+
+const alerta =
+event.extendedProps.alertaGarantia;
+
+if(garantia){
+
+const vencimento =
+new Date(garantia);
+
+const alertaData =
+new Date(alerta);
+
+if(
+hoje >= alertaData &&
+hoje <= vencimento
+){
+
+alert(
+`⚠️ A garantia do cliente:
+
+${event.title}
+
+vence em:
+
+${vencimento.toLocaleDateString()}`
+);
+
+}
+
+if(hoje > vencimento){
+
+event.setProp("color","#6b7280");
+
+}
+
+}
+
+});
 
 }
 
@@ -550,3 +658,4 @@ closeModal();
 }
 
 }
+```
