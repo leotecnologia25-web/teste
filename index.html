@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -10,7 +11,6 @@
 <title>Agenda Inteligente</title>
 
 <!-- FONTES -->
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,17 +18,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- ÍCONES -->
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <!-- FULLCALENDAR -->
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css">
 
 <style>
 
 /* RESET */
-
 *{
 margin:0;
 padding:0;
@@ -37,7 +34,6 @@ font-family:'Poppins',sans-serif;
 }
 
 /* BODY */
-
 body{
 background:linear-gradient(180deg,#020617,#0f172a,#111827);
 min-height:100vh;
@@ -48,7 +44,6 @@ overflow-x:hidden;
 }
 
 /* EFEITO VISUAL */
-
 body::before{
 content:"";
 position:fixed;
@@ -65,7 +60,6 @@ z-index:9999;
 }
 
 /* CONTAINER */
-
 .container{
 width:100%;
 max-width:450px;
@@ -73,10 +67,10 @@ margin:auto;
 }
 
 /* CARDS */
-
 .company-header,
 .event-form,
-.card-dashboard{
+.card-dashboard,
+.garantia-box{
 background:rgba(255,255,255,0.08);
 backdrop-filter:blur(15px);
 border-radius:22px;
@@ -86,7 +80,6 @@ box-shadow:0 10px 30px rgba(0,0,0,0.35);
 }
 
 /* TOPO */
-
 .company-header{
 margin-bottom:10px;
 text-align:center;
@@ -118,7 +111,6 @@ gap:8px;
 }
 
 /* DASHBOARD */
-
 .dashboard{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -141,8 +133,32 @@ margin-bottom:4px;
 font-size:11px;
 }
 
-/* CALENDÁRIO */
+/* GARANTIAS */
+.garantia-box{
+margin-bottom:10px;
+}
 
+.garantia-box h2{
+font-size:16px;
+margin-bottom:10px;
+color:#38bdf8;
+}
+
+#garantiaList{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.garantia-item{
+background:rgba(255,255,255,0.05);
+padding:10px;
+border-radius:12px;
+font-size:12px;
+border-left:4px solid #facc15;
+}
+
+/* CALENDÁRIO */
 .calendar-box{
 background:white;
 border-radius:18px;
@@ -164,20 +180,17 @@ border-radius:8px !important;
 }
 
 .fc-event{
-background:#ef4444 !important;
 border:none !important;
 border-radius:6px !important;
 }
 
 /* FORMULÁRIO */
-
 .event-form h2{
 text-align:center;
 margin-bottom:14px;
 }
 
 /* GRID HORÁRIOS */
-
 .times-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -186,7 +199,6 @@ margin-bottom:12px;
 }
 
 /* HORÁRIOS */
-
 .time-slot{
 background:#00c853;
 color:white;
@@ -212,7 +224,6 @@ cursor:not-allowed;
 }
 
 /* INPUTS */
-
 input,
 select,
 textarea,
@@ -247,15 +258,12 @@ border:1px solid #38bdf8;
 box-shadow:0 0 0 3px rgba(56,189,248,0.15);
 }
 
-/* OPTIONS */
-
 select option{
 background:#111827;
 color:white;
 }
 
 /* BOTÕES */
-
 button{
 background:linear-gradient(135deg,#2563eb,#06b6d4);
 color:white;
@@ -268,7 +276,6 @@ opacity:0.95;
 }
 
 /* MODAL */
-
 .modal{
 display:none;
 position:fixed;
@@ -309,7 +316,6 @@ cursor:pointer;
 }
 
 /* TEMA CLARO */
-
 .light-theme{
 background:#f1f5f9;
 color:#111827;
@@ -317,7 +323,8 @@ color:#111827;
 
 .light-theme .company-header,
 .light-theme .event-form,
-.light-theme .card-dashboard{
+.light-theme .card-dashboard,
+.light-theme .garantia-box{
 background:white;
 color:#111827;
 }
@@ -335,7 +342,6 @@ color:#111827;
 }
 
 /* RESPONSIVO */
-
 @media(max-width:480px){
 
 .company-name{
@@ -361,7 +367,6 @@ font-size:9px !important;
 <div class="container">
 
 <!-- TOPO -->
-
 <div class="company-header">
 
 <div class="company-name">
@@ -390,7 +395,6 @@ Av. Três Nº733 São José de Ribamar - MA
 </div>
 
 <!-- DASHBOARD -->
-
 <div class="dashboard">
 
 <div class="card-dashboard">
@@ -410,14 +414,25 @@ Av. Três Nº733 São José de Ribamar - MA
 
 </div>
 
-<!-- BOTÃO -->
+<!-- GARANTIAS -->
+<div class="garantia-box">
 
+<h2>🛡️ Garantias Próximas</h2>
+
+<div id="garantiaList">
+
+<p>Nenhuma garantia próxima.</p>
+
+</div>
+
+</div>
+
+<!-- BOTÃO -->
 <button type="button" onclick="toggleTheme()">
 🌙 Alternar Tema
 </button>
 
 <!-- BUSCA -->
-
 <input
 type="text"
 id="searchClient"
@@ -426,7 +441,6 @@ onkeyup="searchEvents()"
 >
 
 <!-- CALENDÁRIO -->
-
 <div class="calendar-box">
 
 <div id="calendar"></div>
@@ -434,7 +448,6 @@ onkeyup="searchEvents()"
 </div>
 
 <!-- FORM -->
-
 <div class="event-form">
 
 <h2>📅 Novo Agendamento</h2>
@@ -529,7 +542,6 @@ onclick="exportBackup()"
 </div>
 
 <!-- MODAL -->
-
 <div id="eventModal" class="modal">
 
 <div class="modal-content">
@@ -561,12 +573,11 @@ onclick="deleteSelectedEvent()"
 </div>
 
 <!-- FULLCALENDAR -->
-
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 
 <!-- SCRIPT -->
-
 <script src="script.js"></script>
 
 </body>
 </html>
+```
