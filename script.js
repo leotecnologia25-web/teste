@@ -1,4 +1,4 @@
-```javascript
+javascript
 let calendar;
 let selectedEvent = null;
 
@@ -658,4 +658,4 @@ closeModal();
 }
 
 }
-```
+
