@@ -151,6 +151,7 @@ onclick="toggleTheme()"
 type="text"
 id="searchClient"
 placeholder="🔎 Buscar Cliente"
+autocomplete="off"
 onkeyup="searchEvents()"
 >
 
@@ -315,15 +316,18 @@ onclick="selectTime('17:00')"
 type="text"
 id="clientName"
 placeholder="👤 Nome do Cliente"
+autocomplete="off"
 >
 
 <input
 type="tel"
 id="clientPhone"
 placeholder="📞 Telefone"
+autocomplete="off"
 >
 
 <textarea
+class="full-width"
 id="description"
 rows="4"
 placeholder="📝 Descrição do serviço"
@@ -332,6 +336,7 @@ placeholder="📝 Descrição do serviço"
 <input
 type="datetime-local"
 id="start"
+class="full-width"
 >
 
 </div>
@@ -342,6 +347,7 @@ id="start"
 
 <button
 type="button"
+id="saveBtn"
 onclick="addEvent()"
 >
 
@@ -378,7 +384,12 @@ RODAPÉ
 MODAL
 ========================================= -->
 
-<div id="eventModal" class="modal">
+<div
+id="eventModal"
+class="modal"
+role="dialog"
+aria-modal="true"
+>
 
 <div class="modal-content">
 
@@ -413,12 +424,13 @@ onclick="deleteSelectedEvent()"
 </div>
 
 <!-- FULLCALENDAR -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 
 <!-- SCRIPT -->
-<script src="script.js"></script>
+
+<script defer src="script.js"></script>
 
 </body>
 
 </html>
-
