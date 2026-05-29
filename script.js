@@ -1,3 +1,6 @@
+# JavaScript Corrigido — Agenda Inteligente
+
+```javascript
 /* =========================================
 AGENDA INTELIGENTE - LEOTECNOLOGIA
 SCRIPT COMPLETO CORRIGIDO
@@ -6,15 +9,7 @@ SCRIPT COMPLETO CORRIGIDO
 let calendar;
 let selectedEvent = null;
 
-/* =========================================
-SENHA ADMIN
-========================================= */
-
 const ownerPassword = "123456";
-
-/* =========================================
-PREÇOS
-========================================= */
 
 const servicePrices = {
 "Suporte Técnico":80,
@@ -22,10 +17,6 @@ const servicePrices = {
 "Manutenção":150,
 "Designer":200
 };
-
-/* =========================================
-HORÁRIOS DISPONÍVEIS
-========================================= */
 
 const totalSlots = [
 "08:00",
@@ -45,12 +36,7 @@ INICIALIZAÇÃO
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-const calendarEl =
-document.getElementById("calendar");
-
-/* =========================================
-CALENDÁRIO
-========================================= */
+const calendarEl = document.getElementById("calendar");
 
 calendar = new FullCalendar.Calendar(calendarEl,{
 
@@ -60,17 +46,11 @@ window.innerWidth < 768
 : "timeGridWeek",
 
 locale:"pt-br",
-
 editable:true,
-
 selectable:true,
-
 allDaySlot:false,
-
 slotMinTime:"08:00:00",
-
 slotMaxTime:"22:00:00",
-
 height:350,
 
 headerToolbar:{
@@ -79,10 +59,15 @@ center:"title",
 right:"today"
 },
 
-events:
-JSON.parse(
-localStorage.getItem("eventos")
-) || [],
+/* =========================================
+CARREGAR EVENTOS
+========================================= */
+
+events:(JSON.parse(localStorage.getItem("eventos")) || []).map(event=>(
+{
+...event,
+start:new Date(event.start)
+})),
 
 /* =========================================
 SELEÇÃO
@@ -90,8 +75,17 @@ SELEÇÃO
 
 select:function(info){
 
-document.getElementById("start").value =
-formatDate(info.start);
+const selectedDate = new Date(info.start);
+
+const year = selectedDate.getFullYear();
+const month = String(selectedDate.getMonth()+1).padStart(2,"0");
+const day = String(selectedDate.getDate()).padStart(2,"0");
+const hour = String(selectedDate.getHours()).padStart(2,"0");
+const minute = String(selectedDate.getMinutes()).padStart(2,"0");
+
+const formatted = `${year}-${month}-${day}T${hour}:${minute}`;
+
+document.getElementById("start").value = formatted;
 
 },
 
@@ -107,59 +101,50 @@ document.getElementById("modalTitle").innerHTML =
 `<strong>Cliente:</strong><br>${info.event.title}`;
 
 document.getElementById("modalDescription").innerHTML =
-`<strong>Descrição:</strong><br>${info.event.extendedProps.description}`;
+`<strong>Descrição:</strong><br>${info.event.extendedProps.description || "Sem descrição"}`;
 
 document.getElementById("modalDate").innerHTML =
-`<strong>Data:</strong><br>${info.event.start.toLocaleString()}`;
+`<strong>Data:</strong><br>${new Date(info.event.start).toLocaleString("pt-BR")}`;
 
-document.getElementById("eventModal").style.display =
-"flex";
+document.getElementById("eventModal").style.display = "flex";
 
 },
 
 /* =========================================
-ARRASTAR EVENTO
+MOVER EVENTO
 ========================================= */
 
-eventDrop:function(){
+eventDrop:function(info){
+
+const newStart = info.event.start;
+
+if(isTimeOccupiedMove(newStart, info.event.id)){
+
+alert("❌ Horário já ocupado!");
+
+info.revert();
+
+return;
+
+}
 
 saveEvents();
-
 updateDashboard();
-
 updateOccupiedTimes();
-
 updateGarantias();
 
 }
 
 });
-
-/* =========================================
-RENDER
-========================================= */
 
 calendar.render();
 
 updateDashboard();
-
 updateOccupiedTimes();
-
 updateGarantias();
-
 blockPastTimes();
 
 });
-
-/* =========================================
-FORMATAR DATA
-========================================= */
-
-function formatDate(date){
-
-return date.toISOString().slice(0,16);
-
-}
 
 /* =========================================
 SELECIONAR HORÁRIO
@@ -169,19 +154,13 @@ function selectTime(time){
 
 const currentDate = new Date();
 
-const year =
-currentDate.getFullYear();
+const year = currentDate.getFullYear();
+const month = String(currentDate.getMonth()+1).padStart(2,"0");
+const day = String(currentDate.getDate()).padStart(2,"0");
 
-const month =
-String(currentDate.getMonth()+1)
-.padStart(2,"0");
+const finalDate = `${year}-${month}-${day}T${time}`;
 
-const day =
-String(currentDate.getDate())
-.padStart(2,"0");
-
-document.getElementById("start").value =
-`${year}-${month}-${day}T${time}`;
+document.getElementById("start").value = finalDate;
 
 }
 
@@ -191,27 +170,21 @@ VERIFICAR HORÁRIO OCUPADO
 
 function isTimeOccupied(start){
 
-const selectedDate =
-new Date(start);
+const selectedDate = new Date(start);
 
-const selectedDay =
-selectedDate.toISOString().split("T")[0];
+const selectedDay = selectedDate.toISOString().split("T")[0];
 
 const selectedHour =
-String(selectedDate.getHours())
-.padStart(2,"0");
+String(selectedDate.getHours()).padStart(2,"0") + ":00";
 
 return calendar.getEvents().some(event=>{
 
-const eventDate =
-new Date(event.start);
+const eventDate = new Date(event.start);
 
-const eventDay =
-eventDate.toISOString().split("T")[0];
+const eventDay = eventDate.toISOString().split("T")[0];
 
 const eventHour =
-String(eventDate.getHours())
-.padStart(2,"0");
+String(eventDate.getHours()).padStart(2,"0") + ":00";
 
 return (
 selectedDay === eventDay &&
@@ -223,7 +196,42 @@ selectedHour === eventHour
 }
 
 /* =========================================
-ATUALIZAR HORÁRIOS
+VERIFICAR MOVIMENTO
+========================================= */
+
+function isTimeOccupiedMove(start,currentId){
+
+const selectedDate = new Date(start);
+
+const selectedDay = selectedDate.toISOString().split("T")[0];
+
+const selectedHour =
+String(selectedDate.getHours()).padStart(2,"0") + ":00";
+
+return calendar.getEvents().some(event=>{
+
+if(event.id === currentId){
+return false;
+}
+
+const eventDate = new Date(event.start);
+
+const eventDay = eventDate.toISOString().split("T")[0];
+
+const eventHour =
+String(eventDate.getHours()).padStart(2,"0") + ":00";
+
+return (
+selectedDay === eventDay &&
+selectedHour === eventHour
+);
+
+});
+
+}
+
+/* =========================================
+HORÁRIOS OCUPADOS
 ========================================= */
 
 function updateOccupiedTimes(){
@@ -234,40 +242,36 @@ document.querySelectorAll(".time-slot");
 buttons.forEach(btn=>{
 
 btn.classList.remove("occupied");
-
 btn.disabled = false;
-
 btn.innerHTML = btn.dataset.time;
 
 });
 
-const today = new Date();
+const selectedInput =
+document.getElementById("start").value;
+
+let selectedDay = new Date().toDateString();
+
+if(selectedInput){
+selectedDay = new Date(selectedInput).toDateString();
+}
 
 calendar.getEvents().forEach(event=>{
 
-const eventDate =
-new Date(event.start);
+const eventDate = new Date(event.start);
 
-const sameDay =
-eventDate.toDateString()
-=== today.toDateString();
-
-if(sameDay){
+if(eventDate.toDateString() === selectedDay){
 
 const hour =
-String(eventDate.getHours())
-.padStart(2,"0") + ":00";
+String(eventDate.getHours()).padStart(2,"0") + ":00";
 
 buttons.forEach(btn=>{
 
 if(btn.dataset.time === hour){
 
 btn.classList.add("occupied");
-
 btn.disabled = true;
-
-btn.innerHTML =
-"🔴 Ocupado";
+btn.innerHTML = "🔴 Ocupado";
 
 }
 
@@ -285,48 +289,28 @@ ADICIONAR EVENTO
 
 function addEvent(){
 
-const saveBtn =
-document.getElementById("saveBtn");
+const saveBtn = document.getElementById("saveBtn");
 
 saveBtn.disabled = true;
-
-saveBtn.innerText =
-"Salvando...";
-
-/* =========================================
-CAPTURA
-========================================= */
+saveBtn.innerText = "Salvando...";
 
 const clientName =
-document.getElementById("clientName")
-.value
-.trim();
+document.getElementById("clientName").value.trim();
 
 const clientPhone =
-document.getElementById("clientPhone")
-.value
-.trim();
+document.getElementById("clientPhone").value.trim();
 
 const serviceType =
-document.getElementById("serviceType")
-.value;
+document.getElementById("serviceType").value;
 
 const status =
-document.getElementById("statusService")
-.value;
+document.getElementById("statusService").value;
 
 const description =
-document.getElementById("description")
-.value
-.trim();
+document.getElementById("description").value.trim();
 
 const start =
-document.getElementById("start")
-.value;
-
-/* =========================================
-VALIDAÇÃO
-========================================= */
+document.getElementById("start").value;
 
 if(
 !clientName ||
@@ -337,35 +321,24 @@ if(
 ){
 
 alert("⚠️ Preencha todos os campos!");
-
 resetSaveButton();
-
 return;
 
 }
-
-/* =========================================
-HORÁRIO OCUPADO
-========================================= */
 
 if(isTimeOccupied(start)){
 
 alert("❌ Este horário já está ocupado!");
-
 resetSaveButton();
-
 return;
 
 }
 
-/* =========================================
-CRIAR EVENTO
-========================================= */
-
 calendar.addEvent({
 
-title:
-`${serviceType} - ${clientName}`,
+id:Date.now().toString(),
+
+title:`${serviceType} - ${clientName}`,
 
 start:start,
 
@@ -379,23 +352,11 @@ color:"#ef4444"
 
 });
 
-/* =========================================
-SALVAR
-========================================= */
-
 saveEvents();
-
 updateDashboard();
-
 updateOccupiedTimes();
-
 updateGarantias();
-
 playNotification();
-
-/* =========================================
-WHATSAPP
-========================================= */
 
 const servicePrice =
 servicePrices[serviceType] || 0;
@@ -410,14 +371,9 @@ status,
 servicePrice
 );
 
-/* =========================================
-FINALIZAÇÃO
-========================================= */
-
-alert("✅ Agendamento salvo!");
+alert("✅ Agendamento salvo com sucesso!");
 
 clearForm();
-
 resetSaveButton();
 
 }
@@ -428,13 +384,14 @@ RESET BOTÃO
 
 function resetSaveButton(){
 
-const saveBtn =
-document.getElementById("saveBtn");
+const saveBtn = document.getElementById("saveBtn");
+
+if(saveBtn){
 
 saveBtn.disabled = false;
+saveBtn.innerText = "💾 Salvar Agendamento";
 
-saveBtn.innerText =
-"💾 Salvar Agendamento";
+}
 
 }
 
@@ -445,16 +402,10 @@ LIMPAR FORMULÁRIO
 function clearForm(){
 
 document.getElementById("clientName").value = "";
-
 document.getElementById("clientPhone").value = "";
-
 document.getElementById("serviceType").value = "";
-
-document.getElementById("statusService").value =
-"Agendado";
-
+document.getElementById("statusService").value = "Agendado";
 document.getElementById("description").value = "";
-
 document.getElementById("start").value = "";
 
 }
@@ -471,20 +422,19 @@ calendar.getEvents().forEach(event=>{
 
 events.push({
 
+id:event.id,
+
 title:event.title,
 
 start:event.start,
 
-description:
-event.extendedProps.description,
+description:event.extendedProps.description,
 
-status:
-event.extendedProps.status,
+status:event.extendedProps.status,
 
-phone:
-event.extendedProps.phone,
+phone:event.extendedProps.phone,
 
-color:"#ef4444"
+color:event.backgroundColor || "#ef4444"
 
 });
 
@@ -511,8 +461,7 @@ status,
 servicePrice
 ){
 
-const ownerPhone =
-"5598999942905";
+const ownerPhone = "5598999942905";
 
 const message = `
 📅 *NOVO AGENDAMENTO*
@@ -536,7 +485,7 @@ ${status}
 ${description}
 
 ⏰ Data:
-${new Date(date).toLocaleString()}
+${new Date(date).toLocaleString("pt-BR")}
 `;
 
 const url =
@@ -565,13 +514,11 @@ function deleteSelectedEvent(){
 
 if(selectedEvent){
 
-const password =
-prompt("🔒 Digite a senha:");
+const password = prompt("🔒 Digite a senha:");
 
 if(password !== ownerPassword){
 
 alert("❌ Senha incorreta!");
-
 return;
 
 }
@@ -579,13 +526,9 @@ return;
 selectedEvent.remove();
 
 saveEvents();
-
 updateDashboard();
-
 updateOccupiedTimes();
-
 updateGarantias();
-
 closeModal();
 
 alert("🗑️ Agendamento deletado!");
@@ -605,25 +548,20 @@ const today = new Date();
 const todayEvents =
 calendar.getEvents().filter(event=>{
 
-const eventDate =
-new Date(event.start);
+const eventDate = new Date(event.start);
 
 return (
-eventDate.toDateString()
-=== today.toDateString()
+eventDate.toDateString() === today.toDateString()
 );
 
 });
 
-const totalToday =
-todayEvents.length;
+const totalToday = todayEvents.length;
 
-const occupiedSlots =
-todayEvents.map(event=>{
+const occupiedSlots = todayEvents.map(event=>{
 
 return String(
-new Date(event.start)
-.getHours()
+new Date(event.start).getHours()
 ).padStart(2,"0") + ":00";
 
 });
@@ -633,18 +571,13 @@ totalSlots.filter(
 slot=>!occupiedSlots.includes(slot)
 ).length;
 
-const uniqueClients =
-new Set(
-
+const uniqueClients = new Set(
 calendar.getEvents().map(event=>{
 
-const parts =
-event.title.split(" - ");
-
+const parts = event.title.split(" - ");
 return parts[1] || event.title;
 
 })
-
 );
 
 document.getElementById("todayCount").innerText =
@@ -667,30 +600,18 @@ function updateGarantias(){
 const garantiaList =
 document.getElementById("garantiaList");
 
-const events =
-calendar.getEvents();
+const events = calendar.getEvents();
 
 if(events.length === 0){
 
 garantiaList.innerHTML = `
 <div class="garantia-item">
-
 <div>
-
-<strong>
-Nenhuma garantia próxima
-</strong>
-
+<strong>Nenhuma garantia próxima</strong>
 <br>
-
 Os serviços aparecerão aqui.
-
 </div>
-
-<div class="garantia-badge green">
-OK
-</div>
-
+<div class="garantia-badge green">OK</div>
 </div>
 `;
 
@@ -699,23 +620,18 @@ return;
 }
 
 const today = new Date();
-
 const futureEvents = [];
 
 events.forEach(event=>{
 
-const serviceDate =
-new Date(event.start);
-
-const garantiaDate =
-new Date(serviceDate);
+const serviceDate = new Date(event.start);
+const garantiaDate = new Date(serviceDate);
 
 garantiaDate.setDate(
 garantiaDate.getDate() + 90
 );
 
-const diffDays =
-Math.ceil(
+const diffDays = Math.ceil(
 (garantiaDate - today)
 /
 (1000 * 60 * 60 * 24)
@@ -724,9 +640,7 @@ Math.ceil(
 futureEvents.push({
 
 title:event.title,
-
 days:diffDays,
-
 date:garantiaDate
 
 });
@@ -743,44 +657,27 @@ let badgeClass = "green";
 let badgeText = "OK";
 
 if(item.days <= 30){
-
 badgeClass = "yellow";
 badgeText = "Próxima";
-
 }
 
 if(item.days <= 7){
-
 badgeClass = "red";
 badgeText = "Urgente";
-
 }
 
 garantiaList.innerHTML += `
-
 <div class="garantia-item">
-
 <div>
-
-<strong>
-${item.title}
-</strong>
-
+<strong>${item.title}</strong>
 <br>
-
 Garantia até:
-${item.date.toLocaleDateString()}
-
+${item.date.toLocaleDateString("pt-BR")}
 </div>
-
 <div class="garantia-badge ${badgeClass}">
-
 ${badgeText}
-
 </div>
-
 </div>
-
 `;
 
 });
@@ -800,8 +697,7 @@ document.getElementById("searchClient")
 
 calendar.getEvents().forEach(event=>{
 
-const title =
-event.title.toLowerCase();
+const title = event.title.toLowerCase();
 
 if(title.includes(search)){
 
@@ -823,9 +719,7 @@ TEMA
 
 function toggleTheme(){
 
-document.body.classList.toggle(
-"light-theme"
-);
+document.body.classList.toggle("light-theme");
 
 }
 
@@ -835,26 +729,19 @@ EXPORTAR BACKUP
 
 function exportBackup(){
 
-const data =
-localStorage.getItem("eventos");
+const data = localStorage.getItem("eventos");
 
-const blob =
-new Blob(
+const blob = new Blob(
 [data],
 {type:"application/json"}
 );
 
-const url =
-URL.createObjectURL(blob);
+const url = URL.createObjectURL(blob);
 
-const a =
-document.createElement("a");
+const a = document.createElement("a");
 
 a.href = url;
-
-a.download =
-"backup_agenda.json";
-
+a.download = "backup_agenda.json";
 a.click();
 
 }
@@ -874,7 +761,7 @@ audio.play();
 }
 
 /* =========================================
-BLOQUEAR PASSADOS
+BLOQUEAR HORÁRIOS PASSADOS
 ========================================= */
 
 function blockPastTimes(){
@@ -886,15 +773,13 @@ document.querySelectorAll(".time-slot");
 
 buttons.forEach(btn=>{
 
-const hour =
-parseInt(
+const hour = parseInt(
 btn.dataset.time.split(":")[0]
 );
 
 if(hour <= now.getHours()){
 
 btn.disabled = true;
-
 btn.style.opacity = "0.5";
 
 }
@@ -902,6 +787,18 @@ btn.style.opacity = "0.5";
 });
 
 }
+
+/* =========================================
+ATUALIZAR HORÁRIOS AO ALTERAR DATA
+========================================= */
+
+document.addEventListener("change",function(e){
+
+if(e.target.id === "start"){
+updateOccupiedTimes();
+}
+
+});
 
 /* =========================================
 FECHAR MODAL
@@ -913,9 +810,4 @@ const modal =
 document.getElementById("eventModal");
 
 if(event.target === modal){
-
-closeModal();
-
-}
-
-};
+```
