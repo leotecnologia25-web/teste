@@ -1,3 +1,4 @@
+```html id="a1w7xe"
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -7,357 +8,23 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Agenda Inteligente</title>
+<title>LeoTecnologia - Agenda Inteligente</title>
 
-<!-- FONTES -->
+<!-- GOOGLE FONTS -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ÍCONES -->
+<!-- FONT AWESOME -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <!-- FULLCALENDAR -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css">
 
-<style>
-
-/* RESET */
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
-/* BODY */
-body{
-background:linear-gradient(180deg,#020617,#0f172a,#111827);
-min-height:100vh;
-padding:10px;
-color:white;
-transition:0.3s;
-overflow-x:hidden;
-}
-
-/* EFEITO VISUAL */
-body::before{
-content:"";
-position:fixed;
-inset:0;
-pointer-events:none;
-background:repeating-linear-gradient(
-to bottom,
-rgba(255,255,255,0.03),
-rgba(255,255,255,0.03) 1px,
-transparent 2px,
-transparent 4px
-);
-z-index:9999;
-}
-
-/* CONTAINER */
-.container{
-width:100%;
-max-width:450px;
-margin:auto;
-}
-
-/* CARDS */
-.company-header,
-.event-form,
-.card-dashboard,
-.garantia-box{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-border-radius:22px;
-padding:18px;
-border:1px solid rgba(255,255,255,0.08);
-box-shadow:0 10px 30px rgba(0,0,0,0.35);
-}
-
-/* TOPO */
-.company-header{
-margin-bottom:10px;
-text-align:center;
-}
-
-.company-name{
-font-size:24px;
-font-weight:700;
-margin-bottom:12px;
-background:linear-gradient(90deg,#38bdf8,#2563eb);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-.company-info{
-display:flex;
-flex-direction:column;
-gap:8px;
-}
-
-.company-info p{
-background:rgba(255,255,255,0.05);
-padding:10px;
-border-radius:12px;
-font-size:12px;
-display:flex;
-align-items:center;
-gap:8px;
-}
-
-/* DASHBOARD */
-.dashboard{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-bottom:10px;
-}
-
-.card-dashboard{
-padding:15px;
-text-align:center;
-}
-
-.card-dashboard h3{
-font-size:24px;
-color:#38bdf8;
-margin-bottom:4px;
-}
-
-.card-dashboard p{
-font-size:11px;
-}
-
-/* GARANTIAS */
-.garantia-box{
-margin-bottom:10px;
-}
-
-.garantia-box h2{
-font-size:16px;
-margin-bottom:10px;
-color:#38bdf8;
-}
-
-#garantiaList{
-display:flex;
-flex-direction:column;
-gap:8px;
-}
-
-.garantia-item{
-background:rgba(255,255,255,0.05);
-padding:10px;
-border-radius:12px;
-font-size:12px;
-border-left:4px solid #facc15;
-}
-
-/* CALENDÁRIO */
-.calendar-box{
-background:white;
-border-radius:18px;
-padding:6px;
-margin-bottom:10px;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.35);
-}
-
-.fc{
-font-size:10px !important;
-color:#111827;
-}
-
-.fc-button{
-background:#2563eb !important;
-border:none !important;
-border-radius:8px !important;
-}
-
-.fc-event{
-border:none !important;
-border-radius:6px !important;
-}
-
-/* FORMULÁRIO */
-.event-form h2{
-text-align:center;
-margin-bottom:14px;
-}
-
-/* GRID HORÁRIOS */
-.times-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:8px;
-margin-bottom:12px;
-}
-
-/* HORÁRIOS */
-.time-slot{
-background:#00c853;
-color:white;
-border:none;
-padding:10px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-transition:0.2s;
-}
-
-.time-slot:hover{
-transform:scale(1.03);
-}
-
-.time-slot.occupied{
-background:#ef4444;
-}
-
-.time-slot:disabled{
-opacity:0.5;
-cursor:not-allowed;
-}
-
-/* INPUTS */
-input,
-select,
-textarea,
-button{
-width:100%;
-border:none;
-outline:none;
-border-radius:12px;
-padding:12px;
-margin-bottom:10px;
-font-size:12px;
-transition:0.2s;
-}
-
-input,
-select,
-textarea{
-background:rgba(255,255,255,0.08);
-color:white;
-border:1px solid rgba(255,255,255,0.08);
-}
-
-input::placeholder,
-textarea::placeholder{
-color:rgba(255,255,255,0.6);
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-border:1px solid #38bdf8;
-box-shadow:0 0 0 3px rgba(56,189,248,0.15);
-}
-
-select option{
-background:#111827;
-color:white;
-}
-
-/* BOTÕES */
-button{
-background:linear-gradient(135deg,#2563eb,#06b6d4);
-color:white;
-font-weight:600;
-cursor:pointer;
-}
-
-button:hover{
-opacity:0.95;
-}
-
-/* MODAL */
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.8);
-justify-content:center;
-align-items:center;
-z-index:999;
-padding:15px;
-}
-
-.modal-content{
-background:#111827;
-padding:20px;
-border-radius:20px;
-width:100%;
-max-width:340px;
-position:relative;
-}
-
-.modal-content h2{
-margin-bottom:15px;
-text-align:center;
-}
-
-.modal-content p{
-margin-bottom:10px;
-font-size:13px;
-line-height:1.5;
-}
-
-.close-modal{
-position:absolute;
-top:10px;
-right:15px;
-font-size:28px;
-cursor:pointer;
-}
-
-/* TEMA CLARO */
-.light-theme{
-background:#f1f5f9;
-color:#111827;
-}
-
-.light-theme .company-header,
-.light-theme .event-form,
-.light-theme .card-dashboard,
-.light-theme .garantia-box{
-background:white;
-color:#111827;
-}
-
-.light-theme input,
-.light-theme textarea,
-.light-theme select{
-background:#e2e8f0;
-color:#111827;
-}
-
-.light-theme .modal-content{
-background:white;
-color:#111827;
-}
-
-/* RESPONSIVO */
-@media(max-width:480px){
-
-.company-name{
-font-size:20px;
-}
-
-.card-dashboard h3{
-font-size:20px;
-}
-
-.fc{
-font-size:9px !important;
-}
-
-}
-
-</style>
+<!-- CSS -->
+<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -365,7 +32,10 @@ font-size:9px !important;
 
 <div class="container">
 
-<!-- TOPO -->
+<!-- =========================================
+HEADER
+========================================= -->
+
 <div class="company-header">
 
 <div class="company-name">
@@ -393,45 +63,91 @@ Av. Três Nº733 São José de Ribamar - MA
 
 </div>
 
-<!-- DASHBOARD -->
+<!-- =========================================
+DASHBOARD
+========================================= -->
+
 <div class="dashboard">
 
 <div class="card-dashboard">
+
 <h3 id="todayCount">0</h3>
+
 <p>Hoje</p>
+
 </div>
 
 <div class="card-dashboard">
+
 <h3 id="freeCount">0</h3>
+
 <p>Livres</p>
+
 </div>
 
 <div class="card-dashboard">
+
 <h3 id="clientCount">0</h3>
+
 <p>Clientes</p>
-</div>
 
 </div>
 
-<!-- GARANTIAS -->
+</div>
+
+<!-- =========================================
+GARANTIAS
+========================================= -->
+
 <div class="garantia-box">
 
-<h2>🛡️ Garantias Próximas</h2>
+<h2>
+🛡️ Garantias Próximas
+</h2>
 
 <div id="garantiaList">
 
-<p>Nenhuma garantia próxima.</p>
+<div class="garantia-item">
+
+<div>
+
+<strong>
+Nenhuma garantia próxima
+</strong>
+
+<br>
+
+Os serviços aparecerão aqui.
+
+</div>
+
+<div class="garantia-badge green">
+
+OK
 
 </div>
 
 </div>
 
-<!-- BOTÃO -->
-<button type="button" onclick="toggleTheme()">
+</div>
+
+</div>
+
+<!-- =========================================
+AÇÕES
+========================================= -->
+
+<div class="top-actions">
+
+<button
+type="button"
+onclick="toggleTheme()"
+>
+
 🌙 Alternar Tema
+
 </button>
 
-<!-- BUSCA -->
 <input
 type="text"
 id="searchClient"
@@ -439,63 +155,160 @@ placeholder="🔎 Buscar Cliente"
 onkeyup="searchEvents()"
 >
 
-<!-- CALENDÁRIO -->
+</div>
+
+<!-- =========================================
+CALENDÁRIO
+========================================= -->
+
 <div class="calendar-box">
 
 <div id="calendar"></div>
 
 </div>
 
-<!-- FORM -->
+<!-- =========================================
+FORMULÁRIO
+========================================= -->
+
 <div class="event-form">
 
-<h2>📅 Novo Agendamento</h2>
+<h2>
+📅 Novo Agendamento
+</h2>
+
+<!-- HORÁRIOS -->
 
 <div class="times-grid">
 
-<button type="button" class="time-slot" data-time="08:00" onclick="selectTime('08:00')">08:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="08:00"
+onclick="selectTime('08:00')"
+>
+08:00
+</button>
 
-<button type="button" class="time-slot" data-time="09:00" onclick="selectTime('09:00')">09:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="09:00"
+onclick="selectTime('09:00')"
+>
+09:00
+</button>
 
-<button type="button" class="time-slot" data-time="10:00" onclick="selectTime('10:00')">10:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="10:00"
+onclick="selectTime('10:00')"
+>
+10:00
+</button>
 
-<button type="button" class="time-slot" data-time="11:00" onclick="selectTime('11:00')">11:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="11:00"
+onclick="selectTime('11:00')"
+>
+11:00
+</button>
 
-<button type="button" class="time-slot" data-time="13:00" onclick="selectTime('13:00')">13:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="13:00"
+onclick="selectTime('13:00')"
+>
+13:00
+</button>
 
-<button type="button" class="time-slot" data-time="14:00" onclick="selectTime('14:00')">14:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="14:00"
+onclick="selectTime('14:00')"
+>
+14:00
+</button>
 
-<button type="button" class="time-slot" data-time="15:00" onclick="selectTime('15:00')">15:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="15:00"
+onclick="selectTime('15:00')"
+>
+15:00
+</button>
 
-<button type="button" class="time-slot" data-time="16:00" onclick="selectTime('16:00')">16:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="16:00"
+onclick="selectTime('16:00')"
+>
+16:00
+</button>
 
-<button type="button" class="time-slot" data-time="17:00" onclick="selectTime('17:00')">17:00</button>
+<button
+type="button"
+class="time-slot"
+data-time="17:00"
+onclick="selectTime('17:00')"
+>
+17:00
+</button>
 
 </div>
 
+<!-- GRID FORM -->
+
+<div class="form-grid">
+
 <select id="serviceType">
 
-<option value="">🛠️ Tipo de Serviço</option>
+<option value="">
+🛠️ Tipo de Serviço
+</option>
 
-<option value="Suporte Técnico">💻 Suporte Técnico</option>
+<option value="Suporte Técnico">
+💻 Suporte Técnico
+</option>
 
-<option value="Instalação">🖥️ Instalação</option>
+<option value="Instalação">
+🖥️ Instalação
+</option>
 
-<option value="Manutenção">🔧 Manutenção</option>
+<option value="Manutenção">
+🔧 Manutenção
+</option>
 
-<option value="Designer">🎨 Designer</option>
+<option value="Designer">
+🎨 Designer
+</option>
 
 </select>
 
 <select id="statusService">
 
-<option value="Agendado">🟡 Agendado</option>
+<option value="Agendado">
+🟡 Agendado
+</option>
 
-<option value="Em andamento">🔵 Em andamento</option>
+<option value="Em andamento">
+🔵 Em andamento
+</option>
 
-<option value="Finalizado">🟢 Finalizado</option>
+<option value="Finalizado">
+🟢 Finalizado
+</option>
 
-<option value="Cancelado">🔴 Cancelado</option>
+<option value="Cancelado">
+🔴 Cancelado
+</option>
 
 </select>
 
@@ -513,8 +326,8 @@ placeholder="📞 Telefone"
 
 <textarea
 id="description"
-rows="3"
-placeholder="📝 Descrição"
+rows="4"
+placeholder="📝 Descrição do serviço"
 ></textarea>
 
 <input
@@ -522,25 +335,50 @@ type="datetime-local"
 id="start"
 >
 
+</div>
+
+<!-- BOTÕES -->
+
+<div class="button-grid">
+
 <button
 type="button"
 onclick="addEvent()"
 >
-Salvar Agendamento
+
+💾 Salvar Agendamento
+
 </button>
 
 <button
 type="button"
 onclick="exportBackup()"
 >
+
 📦 Exportar Backup
+
 </button>
 
 </div>
 
 </div>
 
-<!-- MODAL -->
+<!-- =========================================
+RODAPÉ
+========================================= -->
+
+<div class="footer">
+
+© 2026 LeoTecnologia - Todos os direitos reservados.
+
+</div>
+
+</div>
+
+<!-- =========================================
+MODAL
+========================================= -->
+
 <div id="eventModal" class="modal">
 
 <div class="modal-content">
@@ -552,7 +390,9 @@ onclick="closeModal()"
 &times;
 </span>
 
-<h2>📅 Detalhes</h2>
+<h2>
+📅 Detalhes do Serviço
+</h2>
 
 <p id="modalTitle"></p>
 
@@ -564,7 +404,9 @@ onclick="closeModal()"
 type="button"
 onclick="deleteSelectedEvent()"
 >
-🗑️ Deletar
+
+🗑️ Deletar Agendamento
+
 </button>
 
 </div>
@@ -578,4 +420,6 @@ onclick="deleteSelectedEvent()"
 <script src="script.js"></script>
 
 </body>
+
 </html>
+```
